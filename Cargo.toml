@@ -13,7 +13,7 @@ edition = "2024"
 [dependencies]
 kuchiki = "0.8.1"
 html5ever = "0.25.1"
-clap = "2.33.3"
+clap = { version = "4.5", features = ["derive"] }
 lazy_static = "1.4.0"
 url = "2.2.2"
 
