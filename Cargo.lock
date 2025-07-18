@@ -257,6 +257,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "hq"
+version = "0.4.0"
+dependencies = [
+ "assert_cmd",
+ "clap",
+ "html5ever",
+ "kuchiki",
+ "lazy_static",
+ "predicates 2.1.5",
+ "url",
+]
+
+[[package]]
 name = "html5ever"
 version = "0.25.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -268,19 +281,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
-]
-
-[[package]]
-name = "htmlq"
-version = "0.4.0"
-dependencies = [
- "assert_cmd",
- "clap",
- "html5ever",
- "kuchiki",
- "lazy_static",
- "predicates 2.1.5",
- "url",
 ]
 
 [[package]]

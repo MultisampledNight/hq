@@ -1,16 +1,14 @@
 [package]
-name = "htmlq"
+name = "hq"
 description = "Like jq, but for HTML."
 categories = ["command-line-utilities"]
 keywords = ["CSS", "HTML", "query"]
-repository = "https://github.com/mgdm/htmlq"
-documentation = "https://github.com/mgdm/htmlq/blob/master/README.md"
+repository = "https://github.com/MultisampledNight/hq"
 readme = "README.md"
 license = "MIT"
 version = "0.4.0"
-authors = ["Michael Maclean <michael@mgdm.net>"]
+authors = ["Michael Maclean <michael@mgdm.net>", "MultisampledNight"]
 edition = "2024"
-exclude = ["/.github"]
 
 [dependencies]
 kuchiki = "0.8.1"
