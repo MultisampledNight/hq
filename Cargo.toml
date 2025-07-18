@@ -11,8 +11,8 @@ authors = ["Michael Maclean <michael@mgdm.net>", "MultisampledNight"]
 edition = "2024"
 
 [dependencies]
-kuchiki = "0.8.1"
-html5ever = "0.25.1"
+kuchikiki = "0.8"
+html5ever = "0.26.0"
 clap = { version = "4.5", features = ["derive"] }
 lazy_static = "1.4.0"
 url = "2.2.2"

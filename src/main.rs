@@ -2,8 +2,8 @@ mod link;
 mod pretty_print;
 
 use clap::Parser;
-use kuchiki::NodeRef;
-use kuchiki::traits::{NodeIterator, TendrilSink};
+use kuchikiki::NodeRef;
+use kuchikiki::traits::{NodeIterator, TendrilSink};
 use std::error::Error;
 use std::fs::File;
 use std::io;
@@ -97,7 +97,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         f => Box::new(File::create(f).expect("should have created output file")),
     };
 
-    let document = kuchiki::parse_html().from_utf8().read_from(&mut input)?;
+    let document = kuchikiki::parse_html().from_utf8().read_from(&mut input)?;
 
     let base: Option<Url> = match (&config.base, &config.detect_base) {
         (Some(base), true) => link::detect_base(&document).or(Url::parse(base).ok()),

@@ -6,7 +6,7 @@ use html5ever::serialize::SerializeOpts;
 use html5ever::serialize::Serializer;
 use html5ever::serialize::TraversalScope;
 // use kuchiki::traits::TendrilSink;
-use kuchiki::NodeRef;
+use kuchikiki::NodeRef;
 use lazy_static::lazy_static;
 use std::collections::HashSet;
 use std::io;
