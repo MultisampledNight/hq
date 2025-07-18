@@ -3,7 +3,7 @@ mod pretty_print;
 
 use clap::Parser;
 use kuchiki::NodeRef;
-use kuchiki::traits::*;
+use kuchiki::traits::{NodeIterator, TendrilSink};
 use std::error::Error;
 use std::fs::File;
 use std::io;
@@ -11,6 +11,7 @@ use url::Url;
 
 #[derive(Debug, Clone, Parser)]
 #[command(version, author, about)]
+#[expect(clippy::struct_excessive_bools)] // ok since it's a "central point" for options
 struct Config {
     /// What CSS selector to filter with.
     #[arg(default_value = "html")]
@@ -119,7 +120,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
 
         if let Some(base) = &base {
-            link::rewrite_relative_url(node, base)
+            link::rewrite_relative_url(node, base);
         }
 
         if !config.attributes.is_empty() {

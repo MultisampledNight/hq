@@ -11,7 +11,7 @@ pub fn rewrite_relative_url(node: &NodeRef, base: &Url) {
         || local_name!("area") == elem.name.local)
     {
         return;
-    };
+    }
     let mut attrs = elem.attributes.borrow_mut();
 
     if attrs.contains("href") {
