@@ -7,7 +7,7 @@ macro_rules! cmd_success_tests {
         #[test]
         fn $name(){
             let (stdin, args, expected) = $value;
-            Command::cargo_bin("htmlq")
+            Command::cargo_bin("hq")
                 .unwrap()
                 .args(args)
                 .write_stdin(stdin)
