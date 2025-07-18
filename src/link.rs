@@ -38,10 +38,7 @@ pub fn detect_base(document: &NodeRef) -> Option<Url> {
         let href = attrs
             .get("href")
             .expect("should have retrieved href from node attributes");
-        return match Url::parse(href) {
-            Ok(url) => Some(url),
-            _ => None,
-        };
+        return Url::parse(href).ok();
     }
 
     None

@@ -4,7 +4,6 @@ mod pretty_print;
 use clap::Parser;
 use kuchiki::NodeRef;
 use kuchiki::traits::*;
-use std::borrow::BorrowMut;
 use std::error::Error;
 use std::fs::File;
 use std::io;
@@ -57,10 +56,10 @@ struct Config {
 fn select_attributes(node: &NodeRef, attributes: &[String], output: &mut dyn io::Write) {
     if let Some(as_element) = node.as_element() {
         for attr in attributes {
-            if let Ok(elem_atts) = as_element.attributes.try_borrow() {
-                if let Some(val) = elem_atts.get(attr.as_str()) {
-                    writeln!(output, "{}", val).ok();
-                }
+            if let Ok(elem_atts) = as_element.attributes.try_borrow()
+                && let Some(val) = elem_atts.get(attr.as_str())
+            {
+                writeln!(output, "{val}").ok();
             }
         }
     }
@@ -100,59 +99,55 @@ fn main() -> Result<(), Box<dyn Error>> {
     let document = kuchiki::parse_html().from_utf8().read_from(&mut input)?;
 
     let base: Option<Url> = match (&config.base, &config.detect_base) {
-        (Some(base), true) => link::detect_base(&document).or(Url::parse(&base).ok()),
-        (Some(base), false) => Url::parse(&base).ok(),
+        (Some(base), true) => link::detect_base(&document).or(Url::parse(base).ok()),
+        (Some(base), false) => Url::parse(base).ok(),
         (None, true) => link::detect_base(&document),
         _ => None,
     };
 
-    let remove_node_selector = config.remove_nodes.join(",");
-
-    document
+    for node in document
         .select(&config.selector)
         .expect("Failed to parse CSS selector")
-        .inspect(|noderef| {
-            let Ok(remove) = noderef.as_node().select_first(&remove_node_selector) else {
-                return;
-            };
+    {
+        let node = node.as_node();
 
-            remove.as_node().detach();
-        })
-        .map(|node| {
-            if let Some(base) = &base {
-                link::rewrite_relative_url(node.as_node(), &base)
+        // detach those nodes that should be removed
+        if let Ok(targets) = node.select(&config.remove_nodes.join(",")) {
+            for target in targets {
+                target.as_node().detach();
             }
-            node
-        })
-        .for_each(|matched_noderef| {
-            let node = matched_noderef.as_node();
+        }
 
-            if !config.attributes.is_empty() {
-                select_attributes(node, &config.attributes, &mut output);
-                return;
-            }
+        if let Some(base) = &base {
+            link::rewrite_relative_url(node, base)
+        }
 
-            if config.text_only {
-                // let content = serialize_text(node, config.ignore_whitespace);
-                // output.write_all(format!("{}\n", content).as_ref()).ok();
-                writeln!(output, "{}", serialize_text(node, config.ignore_whitespace)).ok();
-                return;
-            }
+        if !config.attributes.is_empty() {
+            select_attributes(node, &config.attributes, &mut output);
+            continue;
+        }
 
-            if config.pretty_print {
-                // let content = pretty_print::pretty_print(node);
-                // output.write_all(content.as_ref()).ok();
-                writeln!(output, "{}", pretty_print::pretty_print(node)).ok();
-                return;
-            }
-
-            writeln!(output, "{}", node.to_string()).ok();
-            // let mut content: Vec<u8> = Vec::new();
-            // let Ok(_) = node.serialize(&mut content) else {
-            //     return
-            // };
+        if config.text_only {
+            // let content = serialize_text(node, config.ignore_whitespace);
             // output.write_all(format!("{}\n", content).as_ref()).ok();
-        });
+            writeln!(output, "{}", serialize_text(node, config.ignore_whitespace)).ok();
+            continue;
+        }
+
+        if config.pretty_print {
+            // let content = pretty_print::pretty_print(node);
+            // output.write_all(content.as_ref()).ok();
+            writeln!(output, "{}", pretty_print::pretty_print(node)).ok();
+            continue;
+        }
+
+        writeln!(output, "{}", node.to_string()).ok();
+        // let mut content: Vec<u8> = Vec::new();
+        // let Ok(_) = node.serialize(&mut content) else {
+        //     return
+        // };
+        // output.write_all(format!("{}\n", content).as_ref()).ok();
+    }
 
     Ok(())
 }
