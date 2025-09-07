@@ -14,7 +14,7 @@ use url::Url;
 #[expect(clippy::struct_excessive_bools)] // ok since it's a "central point" for options
 struct Config {
     /// What CSS selector to filter with.
-    #[arg(default_value = "html")]
+    #[arg(default_value = ":root")]
     selector: String,
 
     /// Where to read HTML input from.
